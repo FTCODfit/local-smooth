@@ -68,18 +68,14 @@ def _wlsm(x:list, y:list, initial_weights=None, iterate=5, iterate_rate=0.7, ite
             if np.abs(beta_old[0]-beta[0])/(np.abs(beta[0])+eps)+\
                 np.abs(beta_old[1]-beta[1])/(np.abs(beta[1])+eps)<=2*iterate_stop:
                 break
-    # w_sum = np.sum(weights)
-    # mx = np.sum(weights(x-np.mean(x)))/w_sum
-    # my = np.sum(weights(x-np.mean(y)))/w_sum  
-    # cov_xy = np.sum(weights*(x-mx)*(y-my))/w_sum
-    # var_x  = np.sum(weights*(x-mx)**2)/w_sum
-    # var_y  = np.sum(weights*(y-my)**2)/w_sum
-    # r_w = cov_xy/np.sqrt(var_x*var_y) # 加權相關係數
+
     sigma = np.sqrt(np.sum(sigma2)/np.sum(weights))
     
     return beta, sigma # [slope, intercept], standard
 
-def _wls_1d(x, y, w):
+def _wls_1d(x, y, w=None):
+    if w is None:
+        w = np.ones(len(y))
     Sw = np.sum(w)
     Swx = np.sum(w*x)
     Swx2 = np.sum(w*x*x)
@@ -89,4 +85,4 @@ def _wls_1d(x, y, w):
     Swxy = np.sum(w * x * y)
     b = np.array([Swxy, Swy])
     
-    return A, b
+    return A, b # Abeta = b
