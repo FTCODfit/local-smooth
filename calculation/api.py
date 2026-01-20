@@ -10,10 +10,10 @@ def smooth_method(
     std_num:int=8, 
     std_const:float=1.6, 
     smooth_level:int=2, 
-    iterate:int=5, 
-    sample_max:int=600, 
     min_num:int=3, 
-    kernel="discrete"
+    kernel="discrete",
+    iterate:int=5, 
+    sample_max:int=1000, 
     ) -> pd.DataFrame:
     
     # first clean
