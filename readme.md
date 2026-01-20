@@ -1,7 +1,7 @@
 # Local Smooth（局部穩健平滑模組）
 
-本腳本主要用於 **實驗數據去躁與平均化** 的 Python 模組工具，  
-主要針對 **溫度或控制參數依賴的大量量測資料** 超導數據設計。
+本模組主要用於 **實驗數據去躁與平均化** 的 Python 模組工具，主要針對 **溫度或控制參數依賴的大量量測資料** 超導數據設計。<br>
+適合用於 **物理實驗、材料量測、溫度掃描資料** 等大量原始數據。
 
 ---
 
@@ -12,20 +12,19 @@
 - 資料雜訊強烈、分佈不穩定  
 - 局部區間內存在離群點（outliers）  
 - 傳統平均或移動平均容易抹平物理結構  
-- 全域擬合模型對局部異常極為敏感  
+- 全域擬合模型對局部異常極為敏感
+<br>
+<br>
 
 本模組的目標是提供一個：
+> **在局部區間內估計趨勢，同時對離群點不敏感的平滑方法**
 
-> **在局部區間內估計趨勢，  
-> 同時對離群點不敏感的平滑方法**
-
-適合用於 **物理實驗、材料量測、溫度掃描資料** 等大量原始數據。
 
 ---
 
 ## 核心概念：Robust Local Smoothing
 
-本方法的核心流程如下：
+### 本方法的核心流程如下：
 
 1. **x 軸分箱（Binned Segmentation）**  
    將資料依 x（如溫度）分段，建立局部結構。
@@ -63,11 +62,11 @@
 
 ---
 
-## 使用方式
+## 使用範例
 
 
 ```python
-from calcalation import Calcalation
+import calcalation 
 import numpy as np
 
 x = np.linspace(0, 100, 200)
@@ -84,6 +83,10 @@ df = calc.smooth_method(
     std_const=1.6,
     min_num=3
 )
+
+# 僅保留篩選後的數據
+df_filter = df[df["keep"]]
+
 ```
 
 ## 函數與參數說明
@@ -150,17 +153,11 @@ df = calc.smooth_method(
 | intercept_std | float | Uncertainty of the intercept estimate |
 | r | float | Pearson correlation coefficient of the local segment |
 
-```
-def smooth_method(
-    x:list, 
-    y:list, 
-    bins:list, 
-    std_num:int=8, 
-    std_const:float=1.6, 
-    smooth_level:int=2, 
-    iterate:int=5, 
-    sample_max:int=1000, 
-    min_num:int=3, 
-    kernel="discrete"
-    ) -> pd.DataFrame:
-```
+---
+### 更新資訊
+
+#### 版本： `3.2.1`
+- 核心矩陣計算拆解為線性組合計算，大幅降低原先計算量。
+- `smooth_method` 新增 Gaussian 權重分布可選參數。
+- `slope_method` 新增 `strategy` 控制參數，可選是否為區間平均值作為代表。
+- `slope_method` 新增 `bin_shift_rate` 控制參數，可避免數據分布不均仍輸出代表斜率。
